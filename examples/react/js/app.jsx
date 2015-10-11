@@ -13,6 +13,7 @@ var app = app || {};
 	app.COMPLETED_TODOS = 'completed';
 	var TodoHeader = app.TodoHeader;
 	var TodoFooter = app.TodoFooter;
+	var TodoItems = app.TodoItems;
 	var TodoItem = app.TodoItem;
 
 	var TodoApp = React.createClass({
@@ -116,17 +117,11 @@ var app = app || {};
 
 			if (todos.length) {
 				main = (
-					<section className="main">
-						<input
-							className="toggle-all"
-							type="checkbox"
-							onChange={this.toggleAll}
-							checked={activeTodoCount === 0}
-						/>
-						<ul className="todo-list">
-							{todoItems}
-						</ul>
-					</section>
+					<TodoItems
+						activeTodoCount={activeTodoCount}
+						onToggleAll={this.toggleAll}>
+						{todoItems}
+					</TodoItems>
 				);
 			}
 
