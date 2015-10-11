@@ -6,12 +6,13 @@
 'use strict';
 
 var React = require('react');
+var ReactDOM = require('react-dom');
 var TodoApp = require('./TodoApp.jsx');
 var TodoModel = require('./TodoModel.js');
 var model = new TodoModel('react-todos');
 
 function render() {
-	React.render(
+	ReactDOM.render(
 		<TodoApp model={model}/>,
 		document.getElementsByClassName('todoapp')[0]
 	);
