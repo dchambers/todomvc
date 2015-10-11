@@ -11,10 +11,9 @@ var app = app || {};
 	app.ALL_TODOS = 'all';
 	app.ACTIVE_TODOS = 'active';
 	app.COMPLETED_TODOS = 'completed';
+	var TodoHeader = app.TodoHeader;
 	var TodoFooter = app.TodoFooter;
 	var TodoItem = app.TodoItem;
-
-	var ENTER_KEY = 13;
 
 	var TodoApp = React.createClass({
 		getInitialState: function () {
@@ -34,19 +33,8 @@ var app = app || {};
 			router.init('/');
 		},
 
-		handleNewTodoKeyDown: function (event) {
-			if (event.keyCode !== ENTER_KEY) {
-				return;
-			}
-
-			event.preventDefault();
-
-			var val = React.findDOMNode(this.refs.newField).value.trim();
-
-			if (val) {
-				this.props.model.addTodo(val);
-				React.findDOMNode(this.refs.newField).value = '';
-			}
+		addTodo: function (todo) {
+			this.props.model.addTodo(todo);
 		},
 
 		toggleAll: function (event) {
@@ -144,16 +132,7 @@ var app = app || {};
 
 			return (
 				<div>
-					<header className="header">
-						<h1>todos</h1>
-						<input
-							ref="newField"
-							className="new-todo"
-							placeholder="What needs to be done?"
-							onKeyDown={this.handleNewTodoKeyDown}
-							autoFocus={true}
-						/>
-					</header>
+					<TodoHeader onTodoAdded={this.addTodo}/>
 					{main}
 					{footer}
 				</div>
