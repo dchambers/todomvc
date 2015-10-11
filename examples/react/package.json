@@ -5,5 +5,8 @@
     "react": "^0.13.3",
     "todomvc-app-css": "^2.0.0",
     "todomvc-common": "^1.0.1"
+  },
+  "devDependencies": {
+    "http-server": "^0.8.5"
   }
 }
