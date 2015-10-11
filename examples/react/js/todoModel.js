@@ -84,4 +84,14 @@ var app = app || {};
 		this.inform();
 	};
 
+	app.TodoModel.prototype.activeTodoCount = function() {
+		return this.todos.reduce(function (accum, todo) {
+			return todo.completed ? accum : accum + 1;
+		}, 0);
+	};
+
+	app.TodoModel.prototype.completedCount = function() {
+		return this.todos.length - this.activeTodoCount();
+	};
+
 })();

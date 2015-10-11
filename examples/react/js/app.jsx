@@ -69,7 +69,8 @@ var app = app || {};
 		},
 
 		render: function () {
-			var todos = this.props.model.todos;
+			var model = this.props.model;
+			var todos = model.todos;
 
 			var shownTodos = todos.filter(function (todo) {
 				switch (this.state.nowShowing) {
@@ -97,22 +98,16 @@ var app = app || {};
 				);
 			}, this);
 
-			var activeTodoCount = todos.reduce(function (accum, todo) {
-				return todo.completed ? accum : accum + 1;
-			}, 0);
-
-			var completedCount = todos.length - activeTodoCount;
-
 			return (
 				<div>
 					<TodoHeader onTodoAdded={this.addTodo}/>
 					{todos.length ? (
-						<TodoItems activeTodoCount={activeTodoCount} onToggleAll={this.toggleAll}>
+						<TodoItems activeTodoCount={model.activeTodoCount()} onToggleAll={this.toggleAll}>
 							{todoItems}
 						</TodoItems>
 					) : null}
-					{activeTodoCount || completedCount ? (
-						<TodoFooter count={activeTodoCount} completedCount={completedCount}
+					{model.activeTodoCount() || model.completedCount() ? (
+						<TodoFooter count={model.activeTodoCount()} completedCount={model.completedCount()}
 							nowShowing={this.state.nowShowing} onClearCompleted={this.clearCompleted}
 						/>
 					) : null}
