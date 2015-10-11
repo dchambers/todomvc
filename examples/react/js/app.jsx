@@ -69,8 +69,6 @@ var app = app || {};
 		},
 
 		render: function () {
-			var footer;
-			var main;
 			var todos = this.props.model.todos;
 
 			var shownTodos = todos.filter(function (todo) {
@@ -105,31 +103,19 @@ var app = app || {};
 
 			var completedCount = todos.length - activeTodoCount;
 
-			if (activeTodoCount || completedCount) {
-				footer =
-					<TodoFooter
-						count={activeTodoCount}
-						completedCount={completedCount}
-						nowShowing={this.state.nowShowing}
-						onClearCompleted={this.clearCompleted}
-					/>;
-			}
-
-			if (todos.length) {
-				main = (
-					<TodoItems
-						activeTodoCount={activeTodoCount}
-						onToggleAll={this.toggleAll}>
-						{todoItems}
-					</TodoItems>
-				);
-			}
-
 			return (
 				<div>
 					<TodoHeader onTodoAdded={this.addTodo}/>
-					{main}
-					{footer}
+					{todos.length ? (
+						<TodoItems activeTodoCount={activeTodoCount} onToggleAll={this.toggleAll}>
+							{todoItems}
+						</TodoItems>
+					) : null}
+					{activeTodoCount || completedCount ? (
+						<TodoFooter count={activeTodoCount} completedCount={completedCount}
+							nowShowing={this.state.nowShowing} onClearCompleted={this.clearCompleted}
+						/>
+					) : null}
 				</div>
 			);
 		}
