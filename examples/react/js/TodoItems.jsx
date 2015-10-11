@@ -4,26 +4,26 @@
 /*jshint newcap: false */
 /*global React */
 
-var app = app || {};
+'use strict';
 
-(function () {
-	'use strict';
+var React = require('react');
 
-	app.TodoItems = React.createClass({
-		render: function () {
-			return (
-        <section className="main">
-          <input
-            className="toggle-all"
-            type="checkbox"
-            onChange={this.props.onToggleAll}
-            checked={this.props.activeTodoCount === 0}
-          />
-          <ul className="todo-list">
-            {this.props.children}
-          </ul>
-        </section>
-			);
-		}
-	});
-})();
+var TodoItems = React.createClass({
+	render: function () {
+		return (
+      <section className="main">
+        <input
+          className="toggle-all"
+          type="checkbox"
+          onChange={this.props.onToggleAll}
+          checked={this.props.activeTodoCount === 0}
+        />
+        <ul className="todo-list">
+          {this.props.children}
+        </ul>
+      </section>
+		);
+	}
+});
+
+module.exports = TodoItems;

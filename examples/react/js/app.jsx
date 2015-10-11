@@ -3,21 +3,19 @@
 /*jshint trailing:false */
 /*jshint newcap:false */
 /*global React, Router*/
-var app = app || {};
+'use strict';
 
-(function () {
-	'use strict';
+var React = require('react');
+var TodoApp = require('./TodoApp.jsx');
+var TodoModel = require('./TodoModel.js');
+var model = new TodoModel('react-todos');
 
-	var TodoApp = app.TodoApp;
-	var model = new app.TodoModel('react-todos');
+function render() {
+	React.render(
+		<TodoApp model={model}/>,
+		document.getElementsByClassName('todoapp')[0]
+	);
+}
 
-	function render() {
-		React.render(
-			<TodoApp model={model}/>,
-			document.getElementsByClassName('todoapp')[0]
-		);
-	}
-
-	model.subscribe(render);
-	render();
-})();
+model.subscribe(render);
+render();

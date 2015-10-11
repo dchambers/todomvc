@@ -3,116 +3,116 @@
 /*jshint trailing:false */
 /*jshint newcap:false */
 /*global React, Router*/
-var app = app || {};
+'use strict';
 
-(function () {
-	'use strict';
+var ALL_TODOS = 'all';
+var ACTIVE_TODOS = 'active';
+var COMPLETED_TODOS = 'completed';
+var React = require('react');
+var director = require('director');
+var TodoHeader = require('./TodoHeader.jsx');
+var TodoFooter = require('./TodoFooter.jsx');
+var TodoItems = require('./TodoItems.jsx');
+var TodoItem = require('./TodoItem.jsx');
 
-	app.ALL_TODOS = 'all';
-	app.ACTIVE_TODOS = 'active';
-	app.COMPLETED_TODOS = 'completed';
-	var TodoHeader = app.TodoHeader;
-	var TodoFooter = app.TodoFooter;
-	var TodoItems = app.TodoItems;
-	var TodoItem = app.TodoItem;
+var TodoApp = React.createClass({
+	getInitialState: function () {
+		return {
+			nowShowing: ALL_TODOS,
+			editing: null
+		};
+	},
 
-	app.TodoApp = React.createClass({
-		getInitialState: function () {
-			return {
-				nowShowing: app.ALL_TODOS,
-				editing: null
-			};
-		},
+	componentDidMount: function () {
+		var setState = this.setState;
+		var router = new director.Router({
+			'/': setState.bind(this, {nowShowing: ALL_TODOS}),
+			'/active': setState.bind(this, {nowShowing: ACTIVE_TODOS}),
+			'/completed': setState.bind(this, {nowShowing: COMPLETED_TODOS})
+		});
+		router.init('/');
+	},
 
-		componentDidMount: function () {
-			var setState = this.setState;
-			var router = Router({
-				'/': setState.bind(this, {nowShowing: app.ALL_TODOS}),
-				'/active': setState.bind(this, {nowShowing: app.ACTIVE_TODOS}),
-				'/completed': setState.bind(this, {nowShowing: app.COMPLETED_TODOS})
-			});
-			router.init('/');
-		},
+	addTodo: function (todo) {
+		this.props.model.addTodo(todo);
+	},
 
-		addTodo: function (todo) {
-			this.props.model.addTodo(todo);
-		},
+	toggleAll: function (event) {
+		var checked = event.target.checked;
+		this.props.model.toggleAll(checked);
+	},
 
-		toggleAll: function (event) {
-			var checked = event.target.checked;
-			this.props.model.toggleAll(checked);
-		},
+	toggle: function (todoToToggle) {
+		this.props.model.toggle(todoToToggle);
+	},
 
-		toggle: function (todoToToggle) {
-			this.props.model.toggle(todoToToggle);
-		},
+	destroy: function (todo) {
+		this.props.model.destroy(todo);
+	},
 
-		destroy: function (todo) {
-			this.props.model.destroy(todo);
-		},
+	edit: function (todo) {
+		this.setState({editing: todo.id});
+	},
 
-		edit: function (todo) {
-			this.setState({editing: todo.id});
-		},
+	save: function (todoToSave, text) {
+		this.props.model.save(todoToSave, text);
+		this.setState({editing: null});
+	},
 
-		save: function (todoToSave, text) {
-			this.props.model.save(todoToSave, text);
-			this.setState({editing: null});
-		},
+	cancel: function () {
+		this.setState({editing: null});
+	},
 
-		cancel: function () {
-			this.setState({editing: null});
-		},
+	clearCompleted: function () {
+		this.props.model.clearCompleted();
+	},
 
-		clearCompleted: function () {
-			this.props.model.clearCompleted();
-		},
+	render: function () {
+		var model = this.props.model;
+		var todos = model.todos;
 
-		render: function () {
-			var model = this.props.model;
-			var todos = model.todos;
+		var shownTodos = todos.filter(function (todo) {
+			switch (this.state.nowShowing) {
+			case ACTIVE_TODOS:
+				return !todo.completed;
+			case COMPLETED_TODOS:
+				return todo.completed;
+			default:
+				return true;
+			}
+		}, this);
 
-			var shownTodos = todos.filter(function (todo) {
-				switch (this.state.nowShowing) {
-				case app.ACTIVE_TODOS:
-					return !todo.completed;
-				case app.COMPLETED_TODOS:
-					return todo.completed;
-				default:
-					return true;
-				}
-			}, this);
-
-			var todoItems = shownTodos.map(function (todo) {
-				return (
-					<TodoItem
-						key={todo.id}
-						todo={todo}
-						onToggle={this.toggle.bind(this, todo)}
-						onDestroy={this.destroy.bind(this, todo)}
-						onEdit={this.edit.bind(this, todo)}
-						editing={this.state.editing === todo.id}
-						onSave={this.save.bind(this, todo)}
-						onCancel={this.cancel}
-					/>
-				);
-			}, this);
-
+		var todoItems = shownTodos.map(function (todo) {
 			return (
-				<div>
-					<TodoHeader onTodoAdded={this.addTodo}/>
-					{todos.length ? (
-						<TodoItems activeTodoCount={model.activeTodoCount()} onToggleAll={this.toggleAll}>
-							{todoItems}
-						</TodoItems>
-					) : null}
-					{model.activeTodoCount() || model.completedCount() ? (
-						<TodoFooter count={model.activeTodoCount()} completedCount={model.completedCount()}
-							nowShowing={this.state.nowShowing} onClearCompleted={this.clearCompleted}
-						/>
-					) : null}
-				</div>
+				<TodoItem
+					key={todo.id}
+					todo={todo}
+					onToggle={this.toggle.bind(this, todo)}
+					onDestroy={this.destroy.bind(this, todo)}
+					onEdit={this.edit.bind(this, todo)}
+					editing={this.state.editing === todo.id}
+					onSave={this.save.bind(this, todo)}
+					onCancel={this.cancel}
+				/>
 			);
-		}
-	});
-})();
+		}, this);
+
+		return (
+			<div>
+				<TodoHeader onTodoAdded={this.addTodo}/>
+				{todos.length ? (
+					<TodoItems activeTodoCount={model.activeTodoCount()} onToggleAll={this.toggleAll}>
+						{todoItems}
+					</TodoItems>
+				) : null}
+				{model.activeTodoCount() || model.completedCount() ? (
+					<TodoFooter count={model.activeTodoCount()} completedCount={model.completedCount()}
+						nowShowing={this.state.nowShowing} onClearCompleted={this.clearCompleted}
+					/>
+				) : null}
+			</div>
+		);
+	}
+});
+
+module.exports = TodoApp;
