@@ -1,8 +1,5 @@
 'use strict';
 
-// TODO: maybe this can be done in a cleaner way?
-global.localStorage = require('localStorage');
-
 var expect = require('chai').expect;
 var React = require('react');
 var ReactTestUtils = require('react-addons-test-utils');

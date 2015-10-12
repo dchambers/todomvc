@@ -2,7 +2,11 @@
   "private": true,
   "scripts": {
     "prepublish": "mkdirp dist && browserify js/app.jsx -s app -t babelify -o dist/app.js",
-    "test": "mocha --compilers js:babel/register test/app.jsx"
+    "test": "npm run test:node && npm run test:browser",
+    "test:node": "mocha --compilers js:babel/register localStorage.js test/app.jsx",
+    "test:node:watch": "mocha --compilers js:babel/register localStorage.js test/app.jsx -w",
+    "test:browser": "karma start",
+    "test:browser:debug": "karma start karma-debug.conf.js"
   },
   "dependencies": {
     "classnames": "^2.1.5",
@@ -18,6 +22,12 @@
     "browserify": "^11.2.0",
     "chai": "^3.3.0",
     "http-server": "^0.8.5",
+    "karma": "^0.13.10",
+    "karma-browserify": "^4.4.0",
+    "karma-chrome-launcher": "^0.2.1",
+    "karma-cli": "^0.1.1",
+    "karma-firefox-launcher": "^0.1.6",
+    "karma-mocha": "^0.2.0",
     "localStorage": "^1.0.3",
     "mkdirp": "^0.5.1",
     "mocha": "^2.3.3"
